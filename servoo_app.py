@@ -1,6 +1,5 @@
 # servoo_app.py
 from flask import Flask, request, jsonify, session
-
 from google.cloud import firestore
 from client.FirestoreClient import db
 from controller.MenuController import MenuController
@@ -61,10 +60,10 @@ def create_user():
 # This function generates a new access token and refresh token for a given user ID
 def generate_tokens(phone_number):
     access_token_payload = {'phone_number': phone_number,
-                            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=15)}
+                            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=720)}
     access_token = jwt.encode(access_token_payload, app.secret_key, algorithm='HS256')
     refresh_token_payload = {'phone_number': phone_number,
-                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=45)}
+                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=720)}
     refresh_token = jwt.encode(refresh_token_payload, app.secret_key, algorithm='HS256')
     return access_token, refresh_token
 
@@ -167,8 +166,6 @@ def add_restaurant():
 
         restaurant_id = uuid_generator.generate_random_uuid()
 
-        # The check for valid phone Number and First Name Last Name will be done on UI.
-        phone_number = data.get("phone_number")
         restaurant_name = data['restaurant_name']
         # Description will be Optional.
         description = data.get('description', '')
@@ -189,7 +186,6 @@ def add_restaurant():
         restaurant_id_str = str(restaurant_id)
         db.collection("SERVOO_RESTAURANTS").document(restaurant_id_str).set(new_restaurant_data_dict)
 
-        print("phone_number of restaurant= " + phone_number)
         # Also add restaurant to the user's restaurant list
         user_doc_ref = db.collection("SERVOO_USERS").document(phone_number)
         user_doc_ref.update({"restaurants_owned": firestore.ArrayUnion([restaurant_id_str])})

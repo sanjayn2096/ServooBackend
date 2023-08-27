@@ -1,5 +1,4 @@
-from model.Restaurant import RestaurantVerificationStatus
-from model.Restaurant import RestaurantActivityStatus
+from enum import Enum
 
 
 class RestaurantInfo:
@@ -13,9 +12,11 @@ class RestaurantInfo:
         self.address = address
         self.theme_color = theme_color
         self.phone_number = phone_number
-        self.verification_status = verification_status if verification_status is not None else RestaurantVerificationStatus.UNVERIFIED.name
+        self.verification_status = verification_status if verification_status is not None else \
+            RestaurantVerificationStatus.UNVERIFIED.name
         self.upi_id = upi_id
-        self.restaurant_status = restaurant_status if verification_status is not None else RestaurantActivityStatus.INACTIVE.name
+        self.restaurant_status = restaurant_status if verification_status is not None else RestaurantActivityStatus\
+            .INACTIVE.name
 
     def to_dict(self):
         return {
@@ -29,3 +30,13 @@ class RestaurantInfo:
             "upi_id": self.upi_id,
             "restaurant_status": self.restaurant_status
         }
+
+
+class RestaurantActivityStatus(Enum):
+    ACTIVE = 1
+    INACTIVE = 2
+
+
+class RestaurantVerificationStatus(Enum):
+    VERIFIED = 1
+    UNVERIFIED = 2
