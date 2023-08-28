@@ -198,6 +198,7 @@ def add_restaurant():
         return jsonify({"error": "Internal server error"}), 500
 
 
+# Check associated restaurant with User, return the restaurants owned.
 @app.route('/api/v1/restaurant', methods=['GET'])
 def get_restaurant():
     try:
@@ -220,20 +221,35 @@ def get_restaurant():
             return jsonify({'error': 'Document not found'}), 404
 
         user_info = ServooUserInfo.from_dict(user_doc.to_dict())
-        return jsonify({"Restaurants Owned" : user_info.restaurants_owned}), 200
-    
+        user_restaurant_id = user_info.restaurants_owned
+
+        user_restaurants = []
+        for restaurant_id in user_restaurant_id :
+            restaurant_ref = db.collection("SERVOO_RESTAURANTS").document(restaurant_id)
+            restaurant_doc = restaurant_ref.get()
+            if not restaurant_doc.exists:
+                return jsonify({'error': 'Restaurant not found'}), 404
+            restaurant_info = RestaurantInfo.from_dict(restaurant_doc.to_dict())
+            user_restaurants.append(restaurant_info.to_dict())
+        return jsonify({"Restaurants Owned": user_restaurants}), 200
+
     except Exception as e:
         print(e)
         return jsonify({"error": "Internal server error"}), 500
 
+# Check associated restaurant with User, return the restaurants owned.
+@app.route('/api/v1/orders', methods=['GET'])
 
-# check associated restaurants
 
-# return restaurant object
+@app.route('/api/v1/orders', methods=['POST'])
 
+@app.route('/api/v1/cart', methods=['POST'])
+@app.route('/api/v1/cart', methods=['GET'])
+@app.route('/api/v1/cart', methods=['PUT'])
+
+@app.route('/api/v1/<restaurant_id>/foodMenuItem', methods=['POST'])
 
 @app.route('/checkout')
-@app.route('/<int:restaurant_id>/menu', methods=['GET'])
 def menu_route(restaurant_id):
     menu = MenuController.get_menu(restaurant_id)
     return jsonify(menu)
