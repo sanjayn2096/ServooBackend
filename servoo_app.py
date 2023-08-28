@@ -71,8 +71,6 @@ def generate_tokens(phone_number):
 # This function validates an access token and returns the user ID associated with it
 def validate_token(access_token):
     try:
-        print("Access token:", access_token)
-        print("Secret key:", app.secret_key)
         payload = jwt.decode(access_token, app.secret_key, algorithms=['HS256'])
         phone_number = payload['phone_number']
         return phone_number
@@ -148,7 +146,7 @@ def update_user():
 
 
 # Create a new restaurant object and also update the User's restaurant list.
-@app.route('/api/v1/addRestaurant', methods=['POST'])
+@app.route('/api/v1/restaurant', methods=['POST'])
 def add_restaurant():
     try:
         jwt_cookie = request.cookies.get('jwt_tokens')
@@ -200,7 +198,40 @@ def add_restaurant():
         return jsonify({"error": "Internal server error"}), 500
 
 
-@app.route('/createRestaurant')
+@app.route('/api/v1/restaurant', methods=['GET'])
+def get_restaurant():
+    try:
+        # get user number
+        jwt_cookie = request.cookies.get('jwt_tokens')
+        if jwt_cookie is None:
+            return jsonify({'error': 'No JWT token provided'}), 401
+
+        # Split the combined tokens into access and refresh tokens
+        access_token, refresh_token = jwt_cookie.split(':')
+
+        # Validate the access token
+        phone_number = validate_token(access_token)
+        if phone_number is None:
+            return jsonify({'error': 'Invalid Token'}), 401
+
+        user_ref = db.collection("SERVOO_USERS").document(phone_number)
+        user_doc = user_ref.get()
+        if not user_doc.exists:
+            return jsonify({'error': 'Document not found'}), 404
+
+        user_info = ServooUserInfo.from_dict(user_doc.to_dict())
+        return jsonify({"Restaurants Owned" : user_info.restaurants_owned}), 200
+    
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Internal server error"}), 500
+
+
+# check associated restaurants
+
+# return restaurant object
+
+
 @app.route('/checkout')
 @app.route('/<int:restaurant_id>/menu', methods=['GET'])
 def menu_route(restaurant_id):

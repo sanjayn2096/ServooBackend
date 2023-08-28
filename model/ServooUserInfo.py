@@ -16,3 +16,14 @@ class ServooUserInfo:
             "restaurants_working_at": self.restaurants_working_at,
             "restaurants_owned": self.restaurants_owned
         }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            phoneNumber=data['phoneNumber'],
+            firstName=data['firstName'],
+            lastName=data['lastName'],
+            email=data['email'],
+            restaurants_working_at=data['restaurants_working_at'],
+            restaurants_owned=data['restaurants_owned']
+        )

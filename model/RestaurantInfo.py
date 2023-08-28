@@ -31,6 +31,20 @@ class RestaurantInfo:
             "restaurant_status": self.restaurant_status
         }
 
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            restaurant_name=data['restaurant_name'],
+            description=data['description'],
+            employees=data['employees'],
+            address=data['address'],
+            theme_color=data['theme_color'],
+            phone_number=data['phone_number'],
+            verification_status=data.get('verification_status'),
+            upi_id=data['upi_id'],
+            restaurant_status=data.get('restaurant_status')
+        )
+
 
 class RestaurantActivityStatus(Enum):
     ACTIVE = 1
