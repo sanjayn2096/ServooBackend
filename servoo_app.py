@@ -12,7 +12,7 @@ import datetime
 
 app = Flask(__name__)
 app.secret_key = 'O9MG5BZGZO5MOCI'
-CORS(app)
+CORS(app, supports_credentials=True)
 
 
 @app.route('/')
@@ -51,7 +51,9 @@ def create_user():
                 'message': 'User registered successfully!',
                 'user': user_data
             })
-            response.set_cookie('jwt_tokens', combined_tokens)
+            # Need to do this as set cookie does not have option for sameSite cookie attribute
+            response.headers.add('Set-Cookie',f"jwt_tokens={combined_tokens}; SameSite=None; Secure")
+
             return response, 200
     except Exception as e:
         return jsonify({'error': str(e)})
