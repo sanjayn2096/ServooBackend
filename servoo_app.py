@@ -112,15 +112,14 @@ def add_food_item():
     try:
         if request.method == 'POST':
             data = request.json
-            # The check for valid phone Number and First Name Last Name will be done on UI.
             restaurant_id = data.get("restaurant_id")
             item_name = data.get("item_name")
-            category = data['category', "DEFAULT"]
-            price = data['price']
-            description = data['description']
-            image_url = data['image_url']
-            stock_status = data['stock_status', 'IN_STOCK']
-            number_of_times_ordered = data['number_times_ordered', '0']
+            category = data.get('category', "DEFAULT")
+            price = data.get('price')
+            description = data.get('description')
+            image_url = data.get('image_url')
+            stock_status = data.get('stock_status', 'IN_STOCK')
+            number_of_times_ordered = data.get('number_times_ordered', '0')
 
             # Create New Food Item from entered Data.
             new_food_item = FoodMenuItem(restaurant_id, item_name, price,
@@ -135,7 +134,7 @@ def add_food_item():
         return jsonify({"error": "Internal server error"}), 500
 
 
-# Fetches Food Items by Restaurant Id and Category.
+# Fetches Food Items by Restaurant_id and Category.
 # If no category is provided, fetch all the default category items
 @app.route('/api/v1/foodItem/<restaurant_id>', methods=['GET'])
 def get_food_items(restaurant_id):
@@ -304,8 +303,7 @@ def get_restaurant():
 
 
 # Should read any updates to SERVOO_ORDERS table
-# How often should the table update ?  HOw many read can it handle. - If too many reads what is the cost.
-# Let's populate the table manually
+# How often should the table update ?  How many read can it handle. - If too many reads what is the cost.
 @app.route('/api/v1/orders/<restaurant_id>', methods=['GET'])
 def fetch_orders_by_restaurant(restaurant_id):
     try:
