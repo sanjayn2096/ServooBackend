@@ -16,11 +16,9 @@ app = Flask(__name__)
 app.secret_key = 'O9MG5BZGZO5MOCI'
 CORS(app, supports_credentials=True)
 
-
 @app.route('/')
 def hello_world():  # put application's code here
     return 'Hello Welcome to Servoo App!'
-
 
 @app.route('/api/v1/user', methods=['POST'])
 def create_user():
