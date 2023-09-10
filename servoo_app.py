@@ -126,7 +126,7 @@ def add_food_item():
                                          description, image_url, stock_status,
                                          number_of_times_ordered)
             new_food_item_data = new_food_item.to_dict()
-            db.collection("SERVOO_FOOD_ITEM").document(restaurant_id).collection(category).set(new_food_item_data)
+            db.collection("SERVOO_FOOD_ITEM").document(restaurant_id).collection(category).add(new_food_item_data)
 
             return jsonify({'message': 'Food item created successfully!', 'food_item': new_food_item_data}), 200
     except Exception as e:
