@@ -13,7 +13,7 @@ import jwt
 import datetime
 
 app = Flask(__name__)
-app.secret_key = 'O9MG5BZGZO5MOCI'
+
 CORS(app, supports_credentials=True)
 
 @app.route('/')
